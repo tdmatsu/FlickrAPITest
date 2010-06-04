@@ -153,13 +153,13 @@ void FlickrModel::replyAuthenticationRequired(QNetworkReply * reply, QAuthentica
 
 }
 
-void FlickrModel::setApiKey(QString apiKey, QString secret)
+void FlickrModel::setApiKeys(QString apiKey, QString secret)
 {
     m_apiKey = apiKey;
     m_secret = secret;
 }
 
-bool FlickrModel::hasApiKey()
+bool FlickrModel::hasApiKeys()
 {
     return (m_apiKey.size() && m_secret.size());
 }

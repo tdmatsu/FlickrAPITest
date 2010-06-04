@@ -24,9 +24,11 @@ private:
 
     void loadSettings();
     void saveSettings();
+    void setProxy(bool enabled);
 
 
 private slots:
+    void on_grpProxy_clicked(bool checked);
     void on_txtSecret_editingFinished();
     void on_txtApiKey_editingFinished();
     void on_btnToken_clicked();

@@ -15,8 +15,8 @@ public:
 
     void getFrob();
     void getToken();
-    void setApiKey(QString apiKey, QString secret);
-    bool hasApiKey();
+    void setApiKeys(QString apiKey, QString secret);
+    bool hasApiKeys();
     bool hasFrob();
 
 private:
