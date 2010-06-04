@@ -120,7 +120,7 @@ void FlickrModel::replyFinishedFrob(QNetworkReply* reply)
 <frob>XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</frob>
 </rsp>
 */
-
+    m_strFrob = "";
     QStringList currentElement;
     QXmlStreamReader xml (reply);
     while (!xml.atEnd()){
