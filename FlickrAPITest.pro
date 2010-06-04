@@ -11,3 +11,4 @@ SOURCES += main.cpp \
 HEADERS += mainwindow.h \
     flickrmodel.h
 FORMS += mainwindow.ui
+RESOURCES += resource.qrc

@@ -46,6 +46,13 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="btnUploadPicture">
+       <property name="text">
+        <string>Upload Picture...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="btnShowFrobToken">
        <property name="text">
         <string>Show Frob/Token</string>

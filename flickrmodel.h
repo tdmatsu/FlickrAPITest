@@ -17,6 +17,7 @@ public:
     void getFrob();
     void getToken();
     void checkToken();
+    void uploadPhoto(QByteArray data);
 
     // Interfaces to internal data
     void setApiKeys(QString apiKey, QString secret);
@@ -29,6 +30,9 @@ public:
 
 private:
     void openAuthenticatinWebPage();
+    void uploadProgress(qint64 x, qint64 y);
+    void replyFinishedUpload();
+    QString makeRowHeader(QString strKey, QString strValue);
 
     QNetworkAccessManager *iNwManager;
     QString m_apiKey;

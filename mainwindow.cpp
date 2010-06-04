@@ -187,3 +187,13 @@ void MainWindow::on_btnChkToken_clicked()
 {
     m_FlickrModel->checkToken();
 }
+
+#include <QFile>
+
+void MainWindow::on_btnUploadPicture_clicked()
+{
+    QFile image(":/olive_jpg");
+    image.open(QIODevice::ReadOnly);
+    m_FlickrModel->uploadPhoto(image.readAll());
+    image.close();
+}

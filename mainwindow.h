@@ -28,6 +28,7 @@ private:
 
 
 private slots:
+    void on_btnUploadPicture_clicked();
     void on_btnChkToken_clicked();
     void on_btnShowFrobToken_clicked();
     void on_grpProxy_clicked(bool checked);
