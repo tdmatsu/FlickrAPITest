@@ -20,8 +20,11 @@ protected:
 
 private:
     Ui::MainWindow *ui;
-
     FlickrModel* m_FlickrModel;
+
+    void loadSettings();
+    void saveSettings();
+
 
 private slots:
     void on_txtSecret_editingFinished();

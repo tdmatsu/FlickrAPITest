@@ -3,8 +3,18 @@
 
 #include <QDebug>
 #include <QMessageBox>
+#include <QSettings>
 
 #include "flickrmodel.h"
+
+const QString SETTINGS_ORGANIZATION_NAME = "Tadaaki Matsumoto";
+const QString SETTINGS_DOMAIN = "tadaaki.matsumoto";
+const QString SETTINGS_APP_NAME = "Flickr API Test";
+
+const QString SETTINGS_KEY_API_KEY = "api/apiKey";
+const QString SETTINGS_KEY_SECRET = "api/secret";
+
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -12,13 +22,37 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    QCoreApplication::setOrganizationName(SETTINGS_ORGANIZATION_NAME);
+    QCoreApplication::setOrganizationDomain(SETTINGS_DOMAIN);
+    QCoreApplication::setApplicationName(SETTINGS_APP_NAME);
+
+    loadSettings();
+
     m_FlickrModel = new FlickrModel(this);
 }
 
 MainWindow::~MainWindow()
 {
+    saveSettings();
+
     delete ui;
 }
+
+void MainWindow::saveSettings()
+{
+    QSettings settings;
+    settings.setValue(SETTINGS_KEY_API_KEY, ui->txtApiKey->text());
+    settings.setValue(SETTINGS_KEY_SECRET, ui->txtSecret->text());
+}
+
+void MainWindow::loadSettings()
+{
+    QSettings settings;
+    ui->txtApiKey->setText(settings.value(SETTINGS_KEY_API_KEY).toString());
+    ui->txtSecret->setText(settings.value(SETTINGS_KEY_SECRET).toString());
+}
+
+
 
 void MainWindow::changeEvent(QEvent *e)
 {
