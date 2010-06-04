@@ -128,6 +128,9 @@ void FlickrModel::replyFinishedFrob(QNetworkReply* reply)
         if (xml.isStartElement() || xml.isEndElement() || xml.isCharacters()){
             if (xml.isStartElement()){
                 currentElement.append(xml.name().toString());
+                if(xml.name().toString() == "rsp"){
+                    qDebug() << "rsp: stat = " << xml.attributes().value("stat").toString();
+                }
             }
             else if (xml.isEndElement()){
                 if(currentElement.isEmpty()){
@@ -247,6 +250,13 @@ void FlickrModel::replyFinishedToken(QNetworkReply*reply)
         if (xml.isStartElement() || xml.isEndElement() || xml.isCharacters()){
             if (xml.isStartElement()){
                 currentElement.append(xml.name().toString());
+                if(xml.name().toString() == "rsp"){
+                    qDebug() << "rsp: stat = " << xml.attributes().value("stat").toString();
+                }else if(xml.name().toString() == "user"){
+                    qDebug() << "user: nsid = " << xml.attributes().value("nsid").toString();
+                    qDebug() << "user: username = " << xml.attributes().value("username").toString();
+                    qDebug() << "user: fullname = " << xml.attributes().value("fullname").toString();
+                }
             }
             else if (xml.isEndElement()){
                 if(currentElement.isEmpty()){
