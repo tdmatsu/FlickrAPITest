@@ -19,7 +19,7 @@
      <rect>
       <x>320</x>
       <y>10</y>
-      <width>111</width>
+      <width>113</width>
       <height>261</height>
      </rect>
     </property>
@@ -27,14 +27,21 @@
      <item>
       <widget class="QPushButton" name="btnAuth">
        <property name="text">
-        <string>1. Authorize</string>
+        <string>Get Frob &amp;&amp; Authorize</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="btnToken">
        <property name="text">
-        <string>2. Get Token</string>
+        <string>Get Token</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnChkToken">
+       <property name="text">
+        <string>Check Token</string>
        </property>
       </widget>
      </item>

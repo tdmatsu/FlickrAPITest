@@ -21,6 +21,8 @@ const QString SETTINGS_KEY_PROXY_HOST_NAME = "proxy/hostName";
 const QString SETTINGS_KEY_PROXY_PORT = "proxy/port";
 const QString SETTINGS_KEY_PROXY_USER = "proxy/user";
 const QString SETTINGS_KEY_PROXY_PASSWORD = "proxy/password";
+const QString SETTINGS_KEY_FLICKR_FROB = "flickr/frob";
+const QString SETTINGS_KEY_FLICKR_TOKEN = "flickr/token";
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -40,12 +42,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->cmbProxyType->addItem("FTP Caching", QNetworkProxy::FtpCachingProxy);
     ui->cmbProxyType->setCurrentIndex(0);
 
-    loadSettings();
-
-    setProxy(ui->grpProxy->isChecked());
 
     m_FlickrModel = new FlickrModel(this);
-    m_FlickrModel->setApiKeys(ui->txtApiKey->text(), ui->txtSecret->text());
+
+    loadSettings();
 }
 
 MainWindow::~MainWindow()
@@ -67,14 +67,20 @@ void MainWindow::saveSettings()
     settings.setValue(SETTINGS_KEY_PROXY_PORT, ui->txtProxyPort->text());
     settings.setValue(SETTINGS_KEY_PROXY_USER, ui->txtProxyUserName->text());
     settings.setValue(SETTINGS_KEY_PROXY_PASSWORD, ui->txtProxyPassword->text());
+
+    settings.setValue(SETTINGS_KEY_FLICKR_FROB, m_FlickrModel->frob());
+    settings.setValue(SETTINGS_KEY_FLICKR_TOKEN, m_FlickrModel->token());
 }
 
 void MainWindow::loadSettings()
 {
+    // API Keys
     QSettings settings;
     ui->txtApiKey->setText(settings.value(SETTINGS_KEY_API_KEY).toString());
     ui->txtSecret->setText(settings.value(SETTINGS_KEY_SECRET).toString());
+    m_FlickrModel->setApiKeys(ui->txtApiKey->text(), ui->txtSecret->text());
 
+    // Proxy settings
     ui->grpProxy->setChecked(settings.value(SETTINGS_KEY_PROXY_ENABLED).toBool());
     QVariant proxyType = settings.value(SETTINGS_KEY_PROXY_TYPE);
     for (int i=0; i < ui->cmbProxyType->count(); i++){
@@ -87,6 +93,11 @@ void MainWindow::loadSettings()
     ui->txtProxyPort->setText(settings.value(SETTINGS_KEY_PROXY_PORT).toString());
     ui->txtProxyUserName->setText(settings.value(SETTINGS_KEY_PROXY_USER).toString());
     ui->txtProxyPassword->setText(settings.value(SETTINGS_KEY_PROXY_PASSWORD).toString());
+    setProxy(ui->grpProxy->isChecked());
+
+    // Flickr Frob & Token
+    m_FlickrModel->setFrob(settings.value(SETTINGS_KEY_FLICKR_FROB).toString());
+    m_FlickrModel->setToken(settings.value(SETTINGS_KEY_FLICKR_TOKEN).toString());
 }
 
 
@@ -168,6 +179,11 @@ void MainWindow::on_grpProxy_clicked(bool checked)
 void MainWindow::on_btnShowFrobToken_clicked()
 {
     QMessageBox msg(this);
-    msg.setText("Frob: " + m_FlickrModel->frob() + "\nToken:" + m_FlickrModel->token());
+    msg.setText("Frob: " + m_FlickrModel->frob() + "\nToken: " + m_FlickrModel->token());
     msg.exec();
+}
+
+void MainWindow::on_btnChkToken_clicked()
+{
+    m_FlickrModel->checkToken();
 }

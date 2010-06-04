@@ -18,10 +18,12 @@ const QString FLICKR_AUTH_URL = "http://flickr.com/services/auth/?";
 
 const QString API_API_KEY = "api_key";
 const QString API_SIG_KEY = "api_sig";
+const QString API_AUTH_TOKEN_KEY = "auth_token";
 
 const QString API_METHOD_KEY = "method";
 const QString API_METHOD_VALUE_FROB = "flickr.auth.getFrob";
 const QString API_METHOD_VALUE_GET_TOKEN = "flickr.auth.getToken";
+const QString API_METHOD_VALUE_CHECK_TOKEN = "flickr.auth.checkToken";
 const QString API_FORMAT_KEY = "format";
 const QString API_FORMAT_VALUE_REST = "rest";
 const QString API_FROB_KEY = "frob";
@@ -171,7 +173,6 @@ bool FlickrModel::hasFrob()
 
 void FlickrModel::getToken()
 {
-
     QStringList params;
     params.append(API_METHOD_KEY + API_METHOD_VALUE_GET_TOKEN);
     params.append(API_API_KEY + m_apiKey);
@@ -198,6 +199,34 @@ void FlickrModel::getToken()
     iNwManager->get(QNetworkRequest(url));
 }
 
+void FlickrModel::checkToken()
+{
+    QStringList params;
+    params.append(API_METHOD_KEY + API_METHOD_VALUE_CHECK_TOKEN);
+    params.append(API_API_KEY + m_apiKey);
+    params.append(API_AUTH_TOKEN_KEY + m_strToken);
+
+    QString apiSig = getMd5(params);
+
+    qDebug() << "md5 = " << apiSig;
+
+    QUrl url(FLICKR_API_BASE_URL);
+    QList< QPair <QString, QString> > query;
+    query.append(QPair<QString, QString>(API_METHOD_KEY, API_METHOD_VALUE_CHECK_TOKEN));
+    query.append(QPair<QString, QString>(API_API_KEY, m_apiKey));
+    query.append(QPair<QString, QString>(API_AUTH_TOKEN_KEY, m_strToken));
+    query.append(QPair<QString, QString>(API_SIG_KEY, apiSig));
+
+    url.setQueryItems(query);
+
+    qDebug () << url.toString();
+
+    iNwManager->disconnect();
+    connect(iNwManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(replyFinishedToken(QNetworkReply*)));
+
+    iNwManager->get(QNetworkRequest(url));
+}
+
 void FlickrModel::replyFinishedToken(QNetworkReply*reply)
 {
 /*
@@ -210,6 +239,7 @@ void FlickrModel::replyFinishedToken(QNetworkReply*reply)
 </auth>
 </rsp>
 */
+    m_strToken = "";
     QStringList currentElement;
     QXmlStreamReader xml (reply);
     while (!xml.atEnd()){
