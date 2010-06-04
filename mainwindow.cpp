@@ -124,7 +124,7 @@ void MainWindow::setProxy(bool enabled)
 void MainWindow::on_btnAuth_clicked()
 {
     if (!m_FlickrModel->hasApiKeys()){
-        QMessageBox msg;
+        QMessageBox msg(this);
         msg.setText("Either API Key or secret key is not set. Please get it <a href='" + FLICKR_API_KEY_URL + "'>here</a>.");
         msg.exec();
         return;
@@ -136,7 +136,7 @@ void MainWindow::on_btnAuth_clicked()
 void MainWindow::on_btnToken_clicked()
 {
     if(!m_FlickrModel->hasFrob()){
-        QMessageBox msg;
+        QMessageBox msg(this);
         msg.setText("Frob not set. Please authenticate first.");
         msg.exec();
         return;
@@ -164,3 +164,10 @@ void MainWindow::on_grpProxy_clicked(bool checked)
     setProxy(checked);
 }
 
+
+void MainWindow::on_btnShowFrobToken_clicked()
+{
+    QMessageBox msg(this);
+    msg.setText("Frob: " + m_FlickrModel->frob() + "\nToken:" + m_FlickrModel->token());
+    msg.exec();
+}

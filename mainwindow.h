@@ -28,6 +28,7 @@ private:
 
 
 private slots:
+    void on_btnShowFrobToken_clicked();
     void on_grpProxy_clicked(bool checked);
     void on_txtSecret_editingFinished();
     void on_txtApiKey_editingFinished();

@@ -18,6 +18,8 @@ public:
     void setApiKeys(QString apiKey, QString secret);
     bool hasApiKeys();
     bool hasFrob();
+    QString frob(){return m_strFrob;}
+    QString token(){return m_strToken;}
 
 private:
     void openAuthenticatinWebPage();
