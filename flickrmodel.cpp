@@ -290,53 +290,23 @@ is_public, is_friend, is_family (optional): Set to 0 for no, 1 for yes. Specifie
 safety_level (optional): Set to 1 for Safe, 2 for Moderate, or 3 for Restricted.
 content_type (optional): Set to 1 for Photo, 2 for Screenshot, or 3 for Other.
 hidden (optional): Set to 1 to keep the photo in global search results, 2 to hide from public searches.
-
-What the request should look like:
-
-POST /services/upload/ HTTP/1.1
-Content-Type: multipart/form-data; boundary=---------------------------7d44e178b0434
-Host: api.flickr.com
-Content-Length: 35261
-
------------------------------7d44e178b0434
-Content-Disposition: form-data; name="api_key"
-
-3632623532453245
------------------------------7d44e178b0434
-Content-Disposition: form-data; name="auth_token"
-
-436436545
------------------------------7d44e178b0434
-Content-Disposition: form-data; name="api_sig"
-
-43732850932746573245
------------------------------7d44e178b0434
-Content-Disposition: form-data; name="photo"; filename="C:\test.jpg"
-Content-Type: image/jpeg
-
-{RAW JFIF DATA}
------------------------------7d44e178b0434--
-
-
 */
+    qDebug() << "data.size() = " << data.size();
+
     QStringList params;
     params.append(API_API_KEY + m_apiKey);
     params.append(API_AUTH_TOKEN_KEY + m_strToken);
     QString apiSig = getMd5(params);
 
-#if 1
     const QString BOUNDARY_STRING = "-----------------------------7d44e178b0434";
     QByteArray dataToSend; // byte array to be sent in POST
 
-    QString strData("");
-    strData += QString(BOUNDARY_STRING + "\r\nContent-Disposition: form-data; name=\"" + API_API_KEY + "\"\r\n\r\n" + m_apiKey + "\r\n");
-    strData += QString(BOUNDARY_STRING + "\r\nContent-Disposition: form-data; name=\"" + API_AUTH_TOKEN_KEY + "\"\r\n\r\n" + m_strToken + "\r\n");
-    strData += QString(BOUNDARY_STRING + "\r\nContent-Disposition: form-data; name=\"" + API_SIG_KEY + "\"\r\n\r\n" + apiSig + "\r\n");
-    strData += QString(BOUNDARY_STRING + "\r\nContent-Disposition: form-data; name=\"" + API_PHOTO_KEY + "\"; filename=\"C:\test.jpg\"\r\nContent-Type: image/jpeg\r\n\r\n");
-    strData += data.data();
-    strData += QString("\r\n" + BOUNDARY_STRING);
-
-    dataToSend = strData.toAscii(); // convert data string to byte array for request
+    dataToSend.append(QString("--" + BOUNDARY_STRING + "\r\nContent-Disposition: form-data; name=\"" + API_API_KEY + "\"\r\n\r\n" + m_apiKey + "\r\n"));
+    dataToSend.append(QString("--" + BOUNDARY_STRING + "\r\nContent-Disposition: form-data; name=\"" + API_AUTH_TOKEN_KEY + "\"\r\n\r\n" + m_strToken + "\r\n"));
+    dataToSend.append(QString("--" + BOUNDARY_STRING + "\r\nContent-Disposition: form-data; name=\"" + API_SIG_KEY + "\"\r\n\r\n" + apiSig + "\r\n"));
+    dataToSend.append(QString("--" + BOUNDARY_STRING + "\r\nContent-Disposition: form-data; name=\"" + API_PHOTO_KEY + "\"; filename=\"test.jpg\"\r\nContent-Type: application/octet-stream\r\n\r\n"));
+    dataToSend.append(data);
+    dataToSend.append(QString("\r\n--" + BOUNDARY_STRING));
 
     // request init
     QNetworkRequest request;
@@ -349,15 +319,9 @@ Content-Type: image/jpeg
     QNetworkReply* reply=iNwManager->post(request, dataToSend); // perform POST request
 
     // connections
+    iNwManager->disconnect();
     connect(reply,SIGNAL(uploadProgress(qint64,qint64) ),SLOT(uploadProgress(qint64,qint64)));
     connect(reply,SIGNAL(finished()), SLOT(replyFinishedUpload())); // reply finished - close file
-
-#else
-
-
-    QNetworkReply *reply = iNwManager->post(req, data);
-    connect(reply, SIGNAL( uploadProgress(qint64, qint64) ), this, SLOT( progress(qint64,qint64) ) );
-#endif
 }
 
 void FlickrModel::replyFinishedUpload()
@@ -376,42 +340,3 @@ QString FlickrModel::makeRowHeader(QString strKey, QString strValue)
     return QString(BOUNDARY_STRING + "\r\nContent-Disposition: form-data; name=\"" + strKey + "\"\r\n\r\n" + strValue + "\r\n");
 }
 
-#if 0
-void test()
-{
-    const QString BOUNDARY_STRING = "-----------------------------7d44e178b0434";
-    QString strData;
-    QString crlf;
-//    QString fileByteSize;
-    QByteArray dataToSend; // byte array to be sent in POST
-
-    // data boundary declerations
-    crlf=0x0d;
-    crlf+=0x0a;
-
-    makeRowHeader(API_API_KEY, m_)
-
-    strData = BOUNDARY_STRING;
-    strData += "Content-Disposition: form-data; name=\"";
-    strData += API_API_KEY;
-    strData += "\"";
-               ; filename=\"ContactList.csv\";"+crlf;
-    strData += "Content-Type: text/csv"+crlf+crlf+inputFile.readAll();
-    strData += BOUNDARY_STRING;
-    dataToSend = strData.toAscii(); // convert data string to byte array for request
-
-
-    // request init
-    QNetworkRequest request(QUrl(FLICKR_UPLOAD_URL));
-    request.setRawHeader("Content-Type", "multipart/form-data; boundary=\"" + BOUNDARY_STRING + "\"");      // really need double-quotes?
-    request.setRawHeader("Host", "api.flickr.com");
-    request.setHeader(QNetworkRequest::ContentLengthHeader, dataToSend.size());
-
-    reply=manager.post(request,dataToSend); // perform POST request
-
-    // connections
-    connect(reply,SIGNAL(uploadProgress(qint64,qint64) ),SLOT(mySetValue(qint64,qint64)));
-    connect(reply,SIGNAL(finished()),SLOT(replyFinished())); // reply finished - close file
-}
-
-#endif

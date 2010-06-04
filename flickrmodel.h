@@ -30,8 +30,6 @@ public:
 
 private:
     void openAuthenticatinWebPage();
-    void uploadProgress(qint64 x, qint64 y);
-    void replyFinishedUpload();
     QString makeRowHeader(QString strKey, QString strValue);
 
     QNetworkAccessManager *iNwManager;
@@ -46,6 +44,8 @@ private slots:
     void replyFinishedFrob(QNetworkReply*);
     void replyFinishedToken(QNetworkReply*);
     void replyAuthenticationRequired(QNetworkReply * reply, QAuthenticator * authenticator);
+    void uploadProgress(qint64 x, qint64 y);
+    void replyFinishedUpload();
 
 };
 
